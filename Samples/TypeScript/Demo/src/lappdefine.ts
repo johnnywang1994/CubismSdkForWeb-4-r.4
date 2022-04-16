@@ -47,6 +47,7 @@ export const PowerImageName = 'CloseNormal.png';
 // ['Hiyori', 'Haru', 'Mark', 'Natori', 'Rice']
 export let ModelDir: string[];
 export let ModelDirSize: number;
+export let Quality: number;
 
 // 外部定義ファイル（json）と合わせる
 export const MotionGroupIdle = 'Idle'; // アイドリング
@@ -77,4 +78,5 @@ export function initConfig(options) {
   ResourcesPath = options.resourcesPath;
   ModelDir = options.modelDir;
   ModelDirSize = ModelDir.length;
+  Quality = options.quality;
 }

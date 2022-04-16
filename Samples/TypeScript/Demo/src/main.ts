@@ -11,8 +11,9 @@ import { initConfig } from './lappdefine';
 const { onload, onbeforeunload, onresize } = initLive2d({
   el: '#hiyori',
   size: 'screen',
+  quality: 2,
   resourcesPath: '../../Resources/',
-  modelDir: ['normal'],
+  modelDir: ['dujiaoshou_4'],
   bindFullscreen: true
 });
 

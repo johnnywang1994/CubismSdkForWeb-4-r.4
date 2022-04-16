@@ -8,6 +8,7 @@
 import { CubismFramework, Option } from '@framework/live2dcubismframework';
 
 import * as LAppDefine from './lappdefine';
+import { Quality } from './lappdefine';
 import { LAppLive2DManager } from './lapplive2dmanager';
 import { LAppPal } from './lapppal';
 import { LAppTextureManager } from './lapptexturemanager';
@@ -62,8 +63,8 @@ export class LAppDelegate {
     if (typeof size === 'string' && ['screen', 'auto'].includes(size)) {
       this._resizeCanvas();
     } else if (typeof size === 'object') {
-      canvas.width = size.width;
-      canvas.height = size.height;
+      canvas.width = size.width * Quality;
+      canvas.height = size.height * Quality;
     }
 
     // glコンテキストを初期化
@@ -300,8 +301,8 @@ export class LAppDelegate {
    */
   private _resizeCanvas(): void {
     if (CanvasSize === 'screen') {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth * Quality;
+      canvas.height = window.innerHeight * Quality;
     } else if (CanvasSize === 'auto') {
       const parent = canvas.parentNode as HTMLElement
       const rect = parent.getBoundingClientRect();
@@ -329,8 +330,8 @@ function onClickBegan(e: MouseEvent): void {
   }
   LAppDelegate.getInstance()._captured = true;
 
-  const posX: number = e.pageX;
-  const posY: number = e.pageY;
+  const posX: number = e.pageX * Quality;
+  const posY: number = e.pageY * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesBegan(posX, posY);
 }
@@ -349,8 +350,8 @@ function onMouseMoved(e: MouseEvent): void {
   }
 
   const rect = (canvas as Element).getBoundingClientRect();
-  const posX: number = e.clientX - rect.left;
-  const posY: number = e.clientY - rect.top;
+  const posX: number = (e.clientX - rect.left) * Quality;
+  const posY: number = (e.clientY - rect.top) * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesMoved(posX, posY);
 }
@@ -366,8 +367,8 @@ function onClickEnded(e: MouseEvent): void {
   }
 
   const rect = (canvas as Element).getBoundingClientRect();
-  const posX: number = e.clientX - rect.left;
-  const posY: number = e.clientY - rect.top;
+  const posX: number = (e.clientX - rect.left) * Quality;
+  const posY: number = (e.clientY - rect.top) * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesEnded(posX, posY);
 }
@@ -383,8 +384,8 @@ function onTouchBegan(e: TouchEvent): void {
 
   LAppDelegate.getInstance()._captured = true;
 
-  const posX = e.changedTouches[0].pageX;
-  const posY = e.changedTouches[0].pageY;
+  const posX = e.changedTouches[0].pageX * Quality;
+  const posY = e.changedTouches[0].pageY * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesBegan(posX, posY);
 }
@@ -404,8 +405,8 @@ function onTouchMoved(e: TouchEvent): void {
 
   const rect = (canvas as Element).getBoundingClientRect();
 
-  const posX = e.changedTouches[0].clientX - rect.left;
-  const posY = e.changedTouches[0].clientY - rect.top;
+  const posX = (e.changedTouches[0].clientX - rect.left) * Quality;
+  const posY = (e.changedTouches[0].clientY - rect.top) * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesMoved(posX, posY);
 }
@@ -423,8 +424,8 @@ function onTouchEnded(e: TouchEvent): void {
 
   const rect = (canvas as Element).getBoundingClientRect();
 
-  const posX = e.changedTouches[0].clientX - rect.left;
-  const posY = e.changedTouches[0].clientY - rect.top;
+  const posX = (e.changedTouches[0].clientX - rect.left) * Quality;
+  const posY = (e.changedTouches[0].clientY - rect.top) * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesEnded(posX, posY);
 }
@@ -442,8 +443,8 @@ function onTouchCancel(e: TouchEvent): void {
 
   const rect = (canvas as Element).getBoundingClientRect();
 
-  const posX = e.changedTouches[0].clientX - rect.left;
-  const posY = e.changedTouches[0].clientY - rect.top;
+  const posX = (e.changedTouches[0].clientX - rect.left) * Quality;
+  const posY = (e.changedTouches[0].clientY - rect.top) * Quality;
 
   LAppDelegate.getInstance()._view.onTouchesEnded(posX, posY);
 }
