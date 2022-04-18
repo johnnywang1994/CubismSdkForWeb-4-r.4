@@ -8,7 +8,7 @@
 import { CubismFramework, Option } from '@framework/live2dcubismframework';
 
 import * as LAppDefine from './lappdefine';
-import { Quality } from './lappdefine';
+import { Quality, ViewMaxScale, ViewMinScale } from './lappdefine';
 import { LAppLive2DManager } from './lapplive2dmanager';
 import { LAppPal } from './lapppal';
 import { LAppTextureManager } from './lapptexturemanager';
@@ -129,6 +129,11 @@ export class LAppDelegate {
     this._resizeCanvas();
     this._view.initialize();
     // this._view.initializeSprite();
+  }
+
+  public scaleView(newScale: number): void {
+    if (newScale > ViewMaxScale || newScale < ViewMinScale) return;
+    this._view._viewMatrix.scale(newScale, newScale);
   }
 
   /**
