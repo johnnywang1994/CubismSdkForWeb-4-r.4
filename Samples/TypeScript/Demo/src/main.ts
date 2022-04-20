@@ -8,22 +8,22 @@
 import { LAppDelegate } from './lappdelegate';
 import { initConfig } from './lappdefine';
 
-// const { onload, onbeforeunload, onresize, setScale } = initLive2d({
-//   el: '#hiyori',
-//   size: 'screen',
-//   quality: 2,
-//   resourcesPath: '../../Resources/',
-//   modelDir: ['z46_4'],
-//   bindFullscreen: true
-// });
+const { onload, onbeforeunload, onresize, setScale } = initLive2d({
+  el: '#hiyori',
+  size: 'screen',
+  quality: 2,
+  resourcesPath: '../../Resources/',
+  modelDir: ['z46_4'],
+  bindFullscreen: true
+});
 
-// window.onload = onload;
-// window.onbeforeunload = onbeforeunload;
-// window.onresize = onresize;
+window.onload = onload;
+window.onbeforeunload = onbeforeunload;
+window.onresize = onresize;
 
-// setTimeout(() => {
-//   // setScale(3)
-// }, 6000)
+setTimeout(() => {
+  // setScale(3)
+}, 6000)
 
 export default function initLive2d(options) {
   initConfig(options);
