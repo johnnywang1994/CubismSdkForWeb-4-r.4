@@ -674,7 +674,7 @@ export class CubismClippingManager_WebGL {
           cc._layoutBounds.height = 1.0 / 3.0;
         }
       } else {
-        CubismLogError('not supported mask count : {0}', layoutCount);
+        // CubismLogError('not supported mask count : {0}', layoutCount);
       }
     }
   }
@@ -973,13 +973,16 @@ export class CubismShader_WebGL {
         .getClippingContextBufferForMask()
         .getClippingManager()
         .getChannelFlagAsColor(channelNo);
-      this.gl.uniform4f(
-        shaderSet.uniformChannelFlagLocation,
-        colorChannel.R,
-        colorChannel.G,
-        colorChannel.B,
-        colorChannel.A
-      );
+
+      if (colorChannel) {
+        this.gl.uniform4f(
+          shaderSet.uniformChannelFlagLocation,
+          colorChannel.R,
+          colorChannel.G,
+          colorChannel.B,
+          colorChannel.A
+        );
+      }
 
       this.gl.uniformMatrix4fv(
         shaderSet.uniformClipMatrixLocation,
@@ -1104,13 +1107,15 @@ export class CubismShader_WebGL {
           .getClippingContextBufferForDraw()
           .getClippingManager()
           .getChannelFlagAsColor(channelNo);
-        this.gl.uniform4f(
-          shaderSet.uniformChannelFlagLocation,
-          colorChannel.R,
-          colorChannel.G,
-          colorChannel.B,
-          colorChannel.A
-        );
+        if (colorChannel) {
+          this.gl.uniform4f(
+            shaderSet.uniformChannelFlagLocation,
+            colorChannel.R,
+            colorChannel.G,
+            colorChannel.B,
+            colorChannel.A
+          );
+        }
       }
 
       // テクスチャ設定

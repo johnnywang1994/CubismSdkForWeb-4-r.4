@@ -13,7 +13,7 @@ const { onload, onbeforeunload, onresize, setScale } = initLive2d({
   size: 'screen',
   quality: 2,
   resourcesPath: '../../Resources/',
-  modelDir: ['z46_4'],
+  modelDir: ['l2d3008.u'],
   bindFullscreen: true
 });
 
