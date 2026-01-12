@@ -100,6 +100,9 @@ export class LAppDelegate {
     const bindTarget = options.bindFullscreen
       ? document.documentElement
       : canvas;
+    this._bindTarget = bindTarget;
+    this._supportTouch = supportTouch;
+    
     if (supportTouch) {
       // タッチ関連コールバック関数登録
       bindTarget.addEventListener('touchstart', onTouchBegan, false);
@@ -140,6 +143,20 @@ export class LAppDelegate {
    * 解放する。
    */
   public release(): void {
+    // イベントリスナーを削除
+    if (this._bindTarget) {
+      if (this._supportTouch) {
+        this._bindTarget.removeEventListener('touchstart', onTouchBegan, false);
+        this._bindTarget.removeEventListener('touchmove', onTouchMoved, false);
+        this._bindTarget.removeEventListener('touchend', onTouchEnded, false);
+        this._bindTarget.removeEventListener('touchcancel', onTouchCancel, false);
+      } else {
+        this._bindTarget.removeEventListener('mousedown', onClickBegan, false);
+        this._bindTarget.removeEventListener('mousemove', onMouseMoved, false);
+        this._bindTarget.removeEventListener('mouseup', onClickEnded, false);
+      }
+    }
+
     this._textureManager.release();
     this._textureManager = null;
 
@@ -279,6 +296,17 @@ export class LAppDelegate {
     this._cubismOption = new Option();
     this._view = new LAppView();
     this._textureManager = new LAppTextureManager();
+    this._bindTarget = null;
+    this._supportTouch = false;
+  }
+
+  /**
+   * Live2D 管理器を取得する
+   *
+   * @return Live2D 管理器のインスタンス
+   */
+  public getLive2DManager(): LAppLive2DManager {
+    return LAppLive2DManager.getInstance();
   }
 
   /**
@@ -323,6 +351,8 @@ export class LAppDelegate {
   _mouseY: number; // マウスY座標
   _isEnd: boolean; // APP終了しているか
   _textureManager: LAppTextureManager; // テクスチャマネージャー
+  _bindTarget: Element; // イベントリスナーをバインドするターゲット
+  _supportTouch: boolean; // タッチイベントをサポートするか
 }
 
 /**
@@ -345,11 +375,11 @@ function onClickBegan(e: MouseEvent): void {
  * マウスポインタが動いたら呼ばれる。
  */
 function onMouseMoved(e: MouseEvent): void {
-  if (!LAppDelegate.getInstance()._captured) {
+  if (s_instance == null || !s_instance._captured) {
     return;
   }
 
-  if (!LAppDelegate.getInstance()._view) {
+  if (!s_instance._view) {
     LAppPal.printMessage('view notfound');
     return;
   }
@@ -358,15 +388,19 @@ function onMouseMoved(e: MouseEvent): void {
   const posX: number = (e.clientX - rect.left) * Quality;
   const posY: number = (e.clientY - rect.top) * Quality;
 
-  LAppDelegate.getInstance()._view.onTouchesMoved(posX, posY);
+  s_instance._view.onTouchesMoved(posX, posY);
 }
 
 /**
  * クリックが終了したら呼ばれる。
  */
 function onClickEnded(e: MouseEvent): void {
-  LAppDelegate.getInstance()._captured = false;
-  if (!LAppDelegate.getInstance()._view) {
+  if (s_instance == null) {
+    return;
+  }
+
+  s_instance._captured = false;
+  if (!s_instance._view) {
     LAppPal.printMessage('view notfound');
     return;
   }
@@ -375,35 +409,39 @@ function onClickEnded(e: MouseEvent): void {
   const posX: number = (e.clientX - rect.left) * Quality;
   const posY: number = (e.clientY - rect.top) * Quality;
 
-  LAppDelegate.getInstance()._view.onTouchesEnded(posX, posY);
+  s_instance._view.onTouchesEnded(posX, posY);
 }
 
 /**
  * タッチしたときに呼ばれる。
  */
 function onTouchBegan(e: TouchEvent): void {
-  if (!LAppDelegate.getInstance()._view) {
+  if (s_instance == null) {
+    return;
+  }
+
+  if (!s_instance._view) {
     LAppPal.printMessage('view notfound');
     return;
   }
 
-  LAppDelegate.getInstance()._captured = true;
+  s_instance._captured = true;
 
   const posX = e.changedTouches[0].pageX * Quality;
   const posY = e.changedTouches[0].pageY * Quality;
 
-  LAppDelegate.getInstance()._view.onTouchesBegan(posX, posY);
+  s_instance._view.onTouchesBegan(posX, posY);
 }
 
 /**
  * スワイプすると呼ばれる。
  */
 function onTouchMoved(e: TouchEvent): void {
-  if (!LAppDelegate.getInstance()._captured) {
+  if (s_instance == null || !s_instance._captured) {
     return;
   }
 
-  if (!LAppDelegate.getInstance()._view) {
+  if (!s_instance._view) {
     LAppPal.printMessage('view notfound');
     return;
   }
@@ -413,16 +451,20 @@ function onTouchMoved(e: TouchEvent): void {
   const posX = (e.changedTouches[0].clientX - rect.left) * Quality;
   const posY = (e.changedTouches[0].clientY - rect.top) * Quality;
 
-  LAppDelegate.getInstance()._view.onTouchesMoved(posX, posY);
+  s_instance._view.onTouchesMoved(posX, posY);
 }
 
 /**
  * タッチが終了したら呼ばれる。
  */
 function onTouchEnded(e: TouchEvent): void {
-  LAppDelegate.getInstance()._captured = false;
+  if (s_instance == null) {
+    return;
+  }
 
-  if (!LAppDelegate.getInstance()._view) {
+  s_instance._captured = false;
+
+  if (!s_instance._view) {
     LAppPal.printMessage('view notfound');
     return;
   }
@@ -432,7 +474,7 @@ function onTouchEnded(e: TouchEvent): void {
   const posX = (e.changedTouches[0].clientX - rect.left) * Quality;
   const posY = (e.changedTouches[0].clientY - rect.top) * Quality;
 
-  LAppDelegate.getInstance()._view.onTouchesEnded(posX, posY);
+  s_instance._view.onTouchesEnded(posX, posY);
 }
 
 /**

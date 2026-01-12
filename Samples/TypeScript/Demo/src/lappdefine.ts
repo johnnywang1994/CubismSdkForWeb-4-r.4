@@ -32,6 +32,10 @@ export const ViewLogicalMaxTop = 2.0;
 // 相対パス
 export let ResourcesPath: string;
 
+// モデル定義ファイルの副檔名
+export let ModelJsonExtension: string;
+// モデル定義ファイル名
+export let ModelFileName: string;
 // モデルの後ろにある背景の画像ファイル
 export const BackImageName = 'back_class_normal.png';
 
@@ -79,4 +83,14 @@ export function initConfig(options) {
   ModelDir = options.modelDir;
   ModelDirSize = ModelDir.length;
   Quality = options.quality;
+  ModelJsonExtension = options.modelJsonExtension || '.model3.json';
+  ModelFileName = options.modelFileName || null;
+  
+  console.log('[initConfig]', {
+    ResourcesPath,
+    ModelDir,
+    ModelJsonExtension,
+    ModelFileName,
+    optionsModelFileName: options.modelFileName
+  });
 }

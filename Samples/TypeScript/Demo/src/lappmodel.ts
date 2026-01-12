@@ -397,7 +397,13 @@ export class LAppModel extends CubismUserModel {
         // WebGLのテクスチャユニットにテクスチャをロードする
         let texturePath =
           this._modelSetting.getTextureFileName(modelTextureNumber);
-        texturePath = this._modelHomeDir + texturePath;
+        // ファイル名をURLエンコーディングして、スペースと特殊文字を正しく処理する
+        const pathParts = texturePath.split('/');
+        const encodedFileName = pathParts.map((part, index) => {
+          // 最後の部分（ファイル名）のみエンコードする
+          return index === pathParts.length - 1 ? encodeURIComponent(part) : part;
+        }).join('/');
+        texturePath = this._modelHomeDir + encodedFileName;
 
         // ロード完了時に呼び出すコールバック関数
         const onLoad = (textureInfo: TextureInfo): void => {
@@ -628,6 +634,15 @@ export class LAppModel extends CubismUserModel {
   }
 
   /**
+   * モデルセッティング情報を取得する
+   *
+   * @return モデルセッティング情報
+   */
+  public getModelSetting(): ICubismModelSetting {
+    return this._modelSetting;
+  }
+
+  /**
    * 引数で指定した表情モーションをセットする
    *
    * @param expressionId 表情モーションのID
@@ -830,24 +845,28 @@ export class LAppModel extends CubismUserModel {
     this._hitArea = new csmVector<csmRect>();
     this._userArea = new csmVector<csmRect>();
 
-    this._idParamAngleX = CubismFramework.getIdManager().getId(
-      CubismDefaultParameterId.ParamAngleX
-    );
-    this._idParamAngleY = CubismFramework.getIdManager().getId(
-      CubismDefaultParameterId.ParamAngleY
-    );
-    this._idParamAngleZ = CubismFramework.getIdManager().getId(
-      CubismDefaultParameterId.ParamAngleZ
-    );
-    this._idParamEyeBallX = CubismFramework.getIdManager().getId(
-      CubismDefaultParameterId.ParamEyeBallX
-    );
-    this._idParamEyeBallY = CubismFramework.getIdManager().getId(
-      CubismDefaultParameterId.ParamEyeBallY
-    );
-    this._idParamBodyAngleX = CubismFramework.getIdManager().getId(
-      CubismDefaultParameterId.ParamBodyAngleX
-    );
+    // 初始化參數 ID，確保 CubismFramework 已初始化
+    const idManager = CubismFramework.getIdManager();
+    if (idManager != null) {
+      this._idParamAngleX = idManager.getId(
+        CubismDefaultParameterId.ParamAngleX
+      );
+      this._idParamAngleY = idManager.getId(
+        CubismDefaultParameterId.ParamAngleY
+      );
+      this._idParamAngleZ = idManager.getId(
+        CubismDefaultParameterId.ParamAngleZ
+      );
+      this._idParamEyeBallX = idManager.getId(
+        CubismDefaultParameterId.ParamEyeBallX
+      );
+      this._idParamEyeBallY = idManager.getId(
+        CubismDefaultParameterId.ParamEyeBallY
+      );
+      this._idParamBodyAngleX = idManager.getId(
+        CubismDefaultParameterId.ParamBodyAngleX
+      );
+    }
 
     this._state = LoadStep.LoadAssets;
     this._expressionCount = 0;

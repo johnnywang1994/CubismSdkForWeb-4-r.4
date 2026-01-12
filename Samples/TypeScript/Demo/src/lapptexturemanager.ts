@@ -61,6 +61,7 @@ export class LAppTextureManager {
         // WebKitでは同じImageのonloadを再度呼ぶには再インスタンスが必要
         // 詳細：https://stackoverflow.com/a/5024181
         ite.ptr().img = new Image();
+        ite.ptr().img.crossOrigin = 'anonymous';
         ite.ptr().img.onload = (): void => callback(ite.ptr());
         ite.ptr().img.src = fileName;
         return;
@@ -69,6 +70,7 @@ export class LAppTextureManager {
 
     // データのオンロードをトリガーにする
     const img = new Image();
+    img.crossOrigin = 'anonymous';
     img.onload = (): void => {
       // テクスチャオブジェクトの作成
       const tex: WebGLTexture = gl.createTexture();
@@ -110,6 +112,9 @@ export class LAppTextureManager {
       }
 
       callback(textureInfo);
+    };
+    img.onerror = (): void => {
+      console.error('Failed to load texture:', fileName);
     };
     img.src = fileName;
   }

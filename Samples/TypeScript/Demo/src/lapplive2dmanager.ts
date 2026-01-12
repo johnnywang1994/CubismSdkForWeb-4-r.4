@@ -10,7 +10,7 @@ import { ACubismMotion } from '@framework/motion/acubismmotion';
 import { csmVector } from '@framework/type/csmvector';
 
 import * as LAppDefine from './lappdefine';
-import { ModelDir, ResourcesPath } from './lappdefine';
+import { ModelDir, ResourcesPath, ModelJsonExtension, ModelFileName } from './lappdefine';
 import { canvas } from './lappdelegate';
 import { LAppModel } from './lappmodel';
 import { LAppPal } from './lapppal';
@@ -183,9 +183,25 @@ export class LAppLive2DManager {
     // model3.jsonのパスを決定する。
     // ディレクトリ名とmodel3.jsonの名前を一致させておくこと。
     const model: string = ModelDir[index];
-    const modelPath: string = ResourcesPath + model + '/';
-    let modelJsonName: string = ModelDir[index];
-    modelJsonName += '.model3.json';
+    let modelPath: string;
+    let modelJsonName: string;
+    
+    // modelFileName が明示的に指定されている場合はそれを使用
+    if (ModelFileName) {
+      // resourcesPath が既に含むディレクトリ名を使用
+      modelPath = ResourcesPath;
+      modelJsonName = ModelFileName;
+      if (LAppDefine.DebugLogEnable) {
+        LAppPal.printMessage(`[APP]Using modelFileName: ${modelJsonName}`);
+      }
+    } else {
+      // デフォルト：ディレクトリ名 + 拡張子
+      modelPath = ResourcesPath + model + '/';
+      modelJsonName = ModelDir[index] + ModelJsonExtension;
+      if (LAppDefine.DebugLogEnable) {
+        LAppPal.printMessage(`[APP]Using default: ${modelJsonName}`);
+      }
+    }
 
     this.releaseAllModel();
     this._models.pushBack(new LAppModel());

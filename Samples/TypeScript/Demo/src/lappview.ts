@@ -85,11 +85,15 @@ export class LAppView {
     this._touchManager = null;
     this._deviceToScreen = null;
 
-    this._gear.release();
-    this._gear = null;
+    if (this._gear) {
+      this._gear.release();
+      this._gear = null;
+    }
 
-    this._back.release();
-    this._back = null;
+    if (this._back) {
+      this._back.release();
+      this._back = null;
+    }
 
     gl.deleteProgram(this._programId);
     this._programId = null;
